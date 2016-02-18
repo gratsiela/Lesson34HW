@@ -1,0 +1,120 @@
+1. SELECT * FROM hr.departments;
+
+2. SELECT department_name FROM hr.departments;
+
+3. SELECT  employee_id AS 'id',
+CONCAT(first_name,' ', last_name) AS 'name', 
+salary AS 'salary by month', salary/20 AS 'salary by day', 
+salary/20/8 AS 'salary by hour' FROM hr.employees;
+
+4. SELECT  employee_id AS 'ID' ,
+CONCAT(first_name,' ', last_name) AS 'Name', 
+CONCAT(LOWER(email),'@mail.somecompany.com') AS 'Full Email Address' FROM hr.employees;
+
+5. SELECT DISTINCT salary AS 'all different salaries paid to the employees' FROM hr.employees;
+
+6. SELECT department_name FROM hr.departments 
+UNION SELECT region_name FROM regions 
+UNION SELECT country_name FROM countries 
+UNION SELECT city FROM locations;
+
+7. SELECT * FROM hr.employees WHERE job_id='AC_MGR';
+
+8. SELECT CONCAT(first_name, ' ', last_name) FROM hr.employees WHERE UPPER(first_name) LIKE 'SA%'; 
+
+9. SELECT CONCAT(first_name,' ',last_name) FROM hr.employees WHERE last_name LIKE  '%ei%';
+
+10. SELECT CONCAT(first_name,' ',last_name) FROM hr.employees WHERE salary BETWEEN 3000 AND 5000;
+
+11. SELECT CONCAT(first_name,' ',last_name) FROM hr.employees 
+WHERE ((salary BETWEEN 2000 AND 15000) AND NOT(salary BETWEEN 5000 AND 10000));
+
+12. SELECT CONCAT(first_name,' ',last_name) FROM hr.employees WHERE salary IN(2500, 4000, 5000);
+
+13. SELECT street_address, city FROM hr.locations WHERE (postal_code IS NULL OR state_province IS NULL);
+
+14. SELECT CONCAT(first_name,' ',last_name), salary FROM hr.employees WHERE salary > 10000 ORDER BY salary DESC;
+
+15. SELECT CONCAT(first_name,' ',last_name), hire_date FROM hr.employees ORDER BY hire_date ASC LIMIT 10;
+
+16. SELECT d.department_name, l.city FROM departments d NATURAL JOIN locations l;
+
+17. SELECT d.department_name, l.city FROM departments d JOIN locations l USING(location_id);
+
+18. SELECT d.department_name, l.city FROM hr.departments d JOIN locations l ON(d.location_id=l.location_id);
+
+19. SELECT d.department_name, l.city, CONCAT(e.first_name,' ',e.last_name) AS 'manager' 
+FROM hr.departments d JOIN locations l ON(d.location_id=l.location_id) 
+JOIN employees e ON(d.manager_id=e.employee_id);
+
+20. SELECT d.department_name, l.city, l.street_address
+FROM hr.departments d RIGHT OUTER JOIN locations l ON (d.location_id=l.location_id);
+ 
+21. SELECT l.city, l.street_address, d.department_name 
+FROM hr.locations l LEFT OUTER JOIN departments d ON (d.location_id=l.location_id);
+
+22. SELECT l.city, l.street_address, d.department_name 
+FROM hr.locations l, hr.departments d WHERE l.location_id=d.location_id;
+
+23. SELECT d.department_name, CONCAT(e.first_name,' ',e.last_name) AS 'manager' 
+FROM departments d, employees e WHERE d.manager_id=e.employee_id;
+
+24. SELECT d.department_name, CONCAT(e.first_name,' ',e.last_name) AS 'manager', 
+CONCAT(city,', ',street_address) AS 'location'  
+FROM departments d, employees e, locations l WHERE (d.manager_id=e.employee_id AND d.location_id=l.location_id);
+
+25. SELECT CONCAT(e.first_name,' ',e.last_name) AS 'name' 
+FROM hr.employees e JOIN hr.departments d ON(e.department_id=d.department_id) 
+WHERE (d.department_name IN('Sales', 'Finance') AND e.hire_date BETWEEN '1995-01-01' AND  '2000-01-01');
+
+26. SELECT DISTINCT e.employee_id, CONCAT(e.first_name,' ',e.last_name) AS 'name' FROM hr.employees e 
+JOIN hr.job_history jh ON(e.employee_id=jh.employee_id) 
+JOIN departments d ON(jh.department_id=d.department_id) WHERE d.department_name='Sales';
+
+27. SELECT CONCAT(e.first_name,' ',e.last_name) AS 'employee', 
+CONCAT(m.first_name,' ',e.last_name) AS 'manager' 
+FROM hr.employees e JOIN hr.employees m WHERE e.manager_id=m.employee_id;
+
+28. SELECT f.first_name, l.last_name FROM hr.employees f, hr.employees l;
+
+29. SELECT CONCAT(e.first_name,' ', e.last_name) AS 'name', 
+
+j.job_title, d.department_name, l.city, l.street_address, c.country_name, r.region_name 
+
+FROM hr.employees e JOIN hr.jobs j ON(e.job_id=j.job_id) 
+
+JOIN hr.departments d ON(e.department_id=d.department_id) 
+
+JOIN hr.locations l ON(d.location_id=l.location_id) 
+
+JOIN hr.countries c ON(l.country_id=c.country_id)
+ 
+JOIN hr.regions r ON(c.region_id=r.region_id);
+
+30. SELECT CONCAT(e.first_name,' ', e.last_name) AS 'name', 
+
+j.job_title, d.department_name, l.city, l.street_address, c.country_name, r.region_name , 
+COALESCE(CONCAT(m.first_name,' ',m.last_name), 'No namager') AS 'manager'
+FROM hr.employees e 
+JOIN hr.jobs j ON( e.job_id=j.job_id) 
+
+JOIN hr.departments d ON(e.department_id=d.department_id) 
+
+JOIN hr.locations l ON(d.location_id=l.location_id)
+ 
+JOIN hr.countries c ON(l.country_id=c.country_id) 
+
+JOIN hr.regions r ON(c.region_id=r.region_id) 
+
+JOIN hr.employees m ON(e.manager_id=m.employee_id);
+
+31. SELECT CONCAT(e.first_name,' ',e.last_name) AS 'name', j.job_title 
+
+FROM hr.employees e JOIN hr.jobs j ON(e.job_id=j.job_id) 
+
+JOIN hr.job_history jh1 ON(e.employee_id=jh1.employee_id) 
+
+JOIN hr.job_history jh2 ON(jh1.employee_id=jh2.employee_id) 
+
+WHERE jh1.end_date < jh2.start_date AND jh1.job_id='AC_ACCOUNT' AND jh2.job_id='AC_MGR';
+
